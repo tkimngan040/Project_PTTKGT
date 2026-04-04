@@ -57,9 +57,11 @@ double calculateTrafficCost(const Road& road, const TrafficContext& ctx) {
 
 //================= UPDATE GRAPH =================
 void updateTraffic(Graph& g, const TrafficContext& ctx) {
-    // Seed random 1 lần
-    srand(time(0));
-
+    static bool seeded = false;
+    if (!seeded) {
+        srand(time(0));
+        seeded = true;
+    }
     for (int i = 0; i < g.adjList.size(); i++) {
         for (auto& road : g.adjList[i]) {
             road.trafficCost = calculateTrafficCost(road, ctx);
