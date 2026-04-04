@@ -2,10 +2,11 @@
 #include <queue>
 #include <vector>
 #include <algorithm>
+#include <limits> // Để dùng numeric_limits
 
 using namespace std;
 
-// Cấu trúc hỗ trợ Priority Queue để Dijkstra chạy nhanh hơn
+// Cấu trúc hỗ trợ Priority Queue
 struct Node {
     int id;
     double weight;
@@ -14,8 +15,16 @@ struct Node {
 
 RouteResult findPath(const Graph& g, int startId, int endId, bool useTrafficMode) {
     int n = g.locations.size();
-    vector<double> dist(n, 1e9); // Khởi tạo khoảng cách vô cùng
-    vector<int> parent(n, -1);   // Mảng lưu vết đường đi
+
+    // 1. SỬA LỖI QUAN TRỌNG: Kiểm tra input đầu vào
+    if (startId < 0 || startId >= n || endId < 0 || endId >= n) {
+        return RouteResult{{}, 0.0, 0.0, false};
+    }
+
+    // 2. SỬA LỖI TIỀM ẨN: Dùng vô cùng chuẩn xác
+    double INF = numeric_limits<double>::infinity();
+    vector<double> dist(n, INF);
+    vector<int> parent(n, -1);
     priority_queue<Node, vector<Node>, greater<Node>> pq;
 
     dist[startId] = 0;
@@ -27,11 +36,11 @@ RouteResult findPath(const Graph& g, int startId, int endId, bool useTrafficMode
         pq.pop();
 
         if (d > dist[u]) continue;
-        if (u == endId) break; // Đã tìm thấy đích thì dừng
+        if (u == endId) break; // Dijkstra chuẩn: tìm thấy đích thì dừng sớm
 
         for (const auto& road : g.adjList[u]) {
             int v = road.to;
-            // Lấy trọng số tùy theo chế độ người dùng chọn 
+            // Chọn trọng số dựa trên chế độ: Khoảng cách hoặc Chi phí giao thông 
             double weight = useTrafficMode ? road.trafficCost : road.distance;
 
             if (dist[u] + weight < dist[v]) {
@@ -43,23 +52,23 @@ RouteResult findPath(const Graph& g, int startId, int endId, bool useTrafficMode
     }
 
     RouteResult result;
-    result.found = (dist[endId] != 1e9);
+    result.found = (dist[endId] != INF);
     
     if (result.found) {
-        // 1. Truy vết ngược để lấy danh sách các điểm đi qua 
+        // Truy vết đường đi từ đích về đầu 
         for (int v = endId; v != -1; v = parent[v]) {
             result.path.push_back(v);
         }
         reverse(result.path.begin(), result.path.end());
 
-        // 2. Tính toán các chỉ số tổng cộng để Người 4 làm báo cáo 
+        // Tính toán tổng quãng đường và tổng chi phí để bàn giao cho Người 4 
         result.totalDistance = 0;
         result.totalCost = 0;
         for (size_t i = 0; i < result.path.size() - 1; i++) {
-            int u = result.path[i];
-            int v = result.path[i+1];
-            for (const auto& r : g.adjList[u]) {
-                if (r.to == v) {
+            int curr = result.path[i];
+            int next = result.path[i+1];
+            for (const auto& r : g.adjList[curr]) {
+                if (r.to == next) {
                     result.totalDistance += r.distance;
                     result.totalCost += r.trafficCost;
                     break;
@@ -67,5 +76,5 @@ RouteResult findPath(const Graph& g, int startId, int endId, bool useTrafficMode
             }
         }
     }
-    return result; // Trả về object kết quả, không in gì ra màn hình 
+    return result;
 }
