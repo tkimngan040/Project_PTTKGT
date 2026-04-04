@@ -48,8 +48,10 @@ struct Road {
     int to;
     double distance;
     AreaType areaType;
-    double baseTraffic;
-    double trafficCost;
+    double baseTraffic = 0;
+    double trafficCost = 0;
+    Road(int f, int t, double d, AreaType a, double b)
+        : from(f), to(t), distance(d), areaType(a), baseTraffic(b) {}
 };
 
 

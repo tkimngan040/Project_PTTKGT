@@ -24,8 +24,8 @@ Graph createSampleGraph() {
 
     //-----Hàm thêm đường 2 chiều-----
     auto addRoad = [&](int from, int to, double dist, AreaType type, double baseTraffic) {
-        Road r1 = {from, to, dist, type, baseTraffic, 0};
-        Road r2 = {to, from, dist, type, baseTraffic, 0};
+        Road r1(from, to, dist, type, baseTraffic);
+        Road r2(to, from, dist, type, baseTraffic);
         g.adjList[from].push_back(r1);
         g.adjList[to].push_back(r2);
     };
