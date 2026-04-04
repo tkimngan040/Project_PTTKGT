@@ -16,12 +16,12 @@ struct Node {
 RouteResult findPath(const Graph& g, int startId, int endId, bool useTrafficMode) {
     int n = g.locations.size();
 
-    // 1. SỬA LỖI QUAN TRỌNG: Kiểm tra input đầu vào
+    // 1. Kiểm tra input đầu vào để tránh crash khi ID không hợp lệ 
     if (startId < 0 || startId >= n || endId < 0 || endId >= n) {
         return RouteResult{{}, 0.0, 0.0, false};
     }
 
-    // 2. SỬA LỖI TIỀM ẨN: Dùng vô cùng chuẩn xác
+    // 2. Dùng vô cùng chuẩn xác để thuật toán ổn định 
     double INF = numeric_limits<double>::infinity();
     vector<double> dist(n, INF);
     vector<int> parent(n, -1);
@@ -36,7 +36,7 @@ RouteResult findPath(const Graph& g, int startId, int endId, bool useTrafficMode
         pq.pop();
 
         if (d > dist[u]) continue;
-        if (u == endId) break; // Dijkstra chuẩn: tìm thấy đích thì dừng sớm
+        if (u == endId) break; // Dijkstra chuẩn: tìm thấy đích thì dừng sớm [cite: 87]
 
         for (const auto& road : g.adjList[u]) {
             int v = road.to;
@@ -61,20 +61,26 @@ RouteResult findPath(const Graph& g, int startId, int endId, bool useTrafficMode
         }
         reverse(result.path.begin(), result.path.end());
 
-        // Tính toán tổng quãng đường và tổng chi phí để bàn giao cho Người 4 
+        // 3. Tính toán tổng quãng đường và tổng chi phí an toàn 
         result.totalDistance = 0;
         result.totalCost = 0;
-        for (size_t i = 0; i < result.path.size() - 1; i++) {
-            int curr = result.path[i];
-            int next = result.path[i+1];
-            for (const auto& r : g.adjList[curr]) {
-                if (r.to == next) {
-                    result.totalDistance += r.distance;
-                    result.totalCost += r.trafficCost;
-                    break;
+
+        // Kiểm tra an toàn để tránh lỗi tràn số khi path rỗng hoặc chỉ có 1 điểm 
+        if (result.path.size() >= 2) {
+            for (size_t i = 0; i < result.path.size() - 1; i++) {
+                int curr = result.path[i];
+                int next = result.path[i+1];
+                
+                // Tìm cạnh nối giữa curr và next để cộng dồn thông số
+                for (const auto& r : g.adjList[curr]) {
+                    if (r.to == next) {
+                        result.totalDistance += r.distance;
+                        result.totalCost += r.trafficCost;
+                        break;
+                    }
                 }
             }
         }
     }
-    return result;
+    return result; // Trả kết quả về cho Người 4 so sánh và Người 5 hiển thị 
 }
