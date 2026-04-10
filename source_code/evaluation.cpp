@@ -33,7 +33,7 @@ string eventToString(EventType e) {
 void describeEvents(const Graph& g, const vector<int>& path, stringstream& ss) {
     bool hasEvent = false;
 
-    for (int i = 0; i < path.size() - 1; i++) {
+    for (int i = 0; i < (int)path.size() - 1; i++) {
         int u = path[i];
         int v = path[i + 1];
 
@@ -60,7 +60,7 @@ void analyzeRoute(const Graph& g, const vector<int>& path,
                   map<AreaType, int>& areaCount,
                   map<EventType, int>& eventCount) {
 
-    for (int i = 0; i < path.size() - 1; i++) {
+    for (int i = 0; i < (int)path.size() - 1; i++) {
         int u = path[i];
         int v = path[i + 1];
 
