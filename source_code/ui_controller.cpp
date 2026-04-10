@@ -13,7 +13,7 @@ using namespace std;
 //================= HIEN THI DIA DIEM =================
 void showLocations(const Graph& g) {
     cout << "\n===== DANH SACH DIA DIEM =====\n";
-    for (int i = 0; i < g.locations.size(); i++) {
+    for (int i = 0; i < (int)g.locations.size(); i++) {
         if (g.locations[i].name != "[DELETED]") {
             cout << i << ". " << g.locations[i].name << endl;
         }

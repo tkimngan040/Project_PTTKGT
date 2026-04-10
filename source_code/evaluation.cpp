@@ -106,9 +106,8 @@ string evaluateRoutes(const Graph& g, const RouteResult& shortest, const RouteRe
     // ===== KET LUAN CHINH =====
     if (costDiff > 10) {
         ss << "Tuyen co chi phi giao thong thap nhat phu hop hon trong dieu kien hien tai.\n";
-        ss << "Tuyen nay dai hon " << distDiff << "% nhung giam " << costDiff << "% chi phi giao thong.\n\n";
-
         ss << "Ly do:\n";
+        ss << "Tuyen nay dai hon " << distDiff << "% nhung giam " << costDiff << "% chi phi giao thong.\n\n";
 
         // ===== SO SANH AREA =====
         for (auto& it : areaA) {

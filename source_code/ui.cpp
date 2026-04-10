@@ -32,9 +32,9 @@ string timeToString(TimeSlot t) {
 
 //================= PRINT PATH =================
 void printPath(const Graph& g, const vector<int>& path) {
-    for (int i = 0; i < path.size(); i++) {
+    for (int i = 0; i < (int)path.size(); i++) {
         cout << g.locations[path[i]].name;
-        if (i != path.size() - 1)
+        if (i != (int)path.size() - 1)
             cout << " -> ";
     }
     cout << endl;
