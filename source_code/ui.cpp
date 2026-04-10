@@ -26,6 +26,7 @@ string timeToString(TimeSlot t) {
         case TimeSlot::NOON: return "Noon";
         case TimeSlot::AFTERNOON: return "Afternoon";
         case TimeSlot::EVENING: return "Evening";
+        case TimeSlot::NIGHT: return "Night";
     }
     return "";
 }
@@ -57,20 +58,29 @@ void displayResult(
     cout << "Ngay: " << dayToString(ctx.day) << endl;
     cout << "Khung gio: " << timeToString(ctx.timeSlot) << "\n\n";
 
-    // ===== TUYEN NGAN NHAT =====
-    cout << "--- TUYEN DUONG NGAN NHAT ---\n";
-    printPath(g, shortest.path);
-    cout << "Tong khoang cach: " << shortest.totalDistance << " km\n";
-    cout << "Tong chi phi giao thong: " << shortest.totalCost << "\n\n";
+    // ===== CHECK TRUNG PATH =====
+    if (shortest.path == traffic.path) {
+        cout << "--- TUYEN DUONG TOI UU (DUY NHAT) ---\n";
+        printPath(g, shortest.path);
+        cout << "Tong khoang cach: " << shortest.totalDistance << " km\n";
+        cout << "Tong chi phi giao thong: " << shortest.totalCost << "\n\n";
+    } 
+    else {
+        // ===== TUYEN NGAN NHAT =====
+        cout << "--- TUYEN DUONG NGAN NHAT ---\n";
+        printPath(g, shortest.path);
+        cout << "Tong khoang cach: " << shortest.totalDistance << " km\n";
+        cout << "Tong chi phi giao thong: " << shortest.totalCost << "\n\n";
 
-    // ===== TUYEN TRAFFIC TOT NHAT =====
-    cout << "--- TUYEN CO CHI PHI GIAO THONG THAP NHAT ---\n";
-    printPath(g, traffic.path);
-    cout << "Tong khoang cach: " << traffic.totalDistance << " km\n";
-    cout << "Tong chi phi giao thong: " << traffic.totalCost << "\n\n";
+        // ===== TUYEN TRAFFIC TOT NHAT =====
+        cout << "--- TUYEN CO CHI PHI GIAO THONG THAP NHAT ---\n";
+        printPath(g, traffic.path);
+        cout << "Tong khoang cach: " << traffic.totalDistance << " km\n";
+        cout << "Tong chi phi giao thong: " << traffic.totalCost << "\n\n";
 
-    // ===== DANH GIA =====
-    cout << evaluateRoutes(g, shortest, traffic);
+        // ===== DANH GIA =====
+        cout << evaluateRoutes(g, shortest, traffic);
+    }
 
-    cout << "\n========================================\n";
+    cout << "\n============================================================\n";
 }

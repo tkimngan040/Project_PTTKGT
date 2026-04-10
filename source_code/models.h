@@ -41,7 +41,8 @@ enum class TimeSlot {
     MORNING,
     NOON,
     AFTERNOON,
-    EVENING
+    EVENING,
+    NIGHT
 };
 
 //Địa điểm

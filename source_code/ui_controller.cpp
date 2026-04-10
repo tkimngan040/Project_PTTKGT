@@ -44,6 +44,7 @@ TimeSlot chooseTimeSlot() {
     cout << "1. Noon (10h - 14h)\n";
     cout << "2. Afternoon (14h - 18h)\n";
     cout << "3. Evening (18h - 22h)\n";
+    cout << "4. Night (22h - 6h)\n";
 
     int choice;
     cin >> choice;

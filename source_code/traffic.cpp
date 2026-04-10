@@ -39,6 +39,7 @@ double getTimeFactor(TimeSlot time) {
         case TimeSlot::NOON: return 1.0;
         case TimeSlot::AFTERNOON: return 1.3;
         case TimeSlot::EVENING: return 1.2;
+        case TimeSlot::NIGHT: return 0.7;
     }
     return 1.0;
 }
@@ -67,11 +68,11 @@ EventType getRandomEvent() {
     std::uniform_int_distribution<> dist(0, 99);
     int r = dist(gen);
 
-    if (r < 55) return EventType::NONE;
-    else if (r < 70) return EventType::ACCIDENT;
-    else if (r < 80) return EventType::ROADWORK;
-    else if (r < 90) return EventType::FLOOD;
-    else if (r < 95) return EventType::CONSTRUCTION;
+    if (r < 70) return EventType::NONE;
+    else if (r < 71) return EventType::ACCIDENT;
+    else if (r < 81) return EventType::ROADWORK;
+    else if (r < 98) return EventType::FLOOD;
+    else if (r < 96) return EventType::CONSTRUCTION;
     else return EventType::FESTIVAL;
 }
 

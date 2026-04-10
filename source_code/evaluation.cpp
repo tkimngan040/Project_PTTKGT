@@ -105,7 +105,7 @@ string evaluateRoutes(const Graph& g, const RouteResult& shortest, const RouteRe
 
     // ===== KET LUAN CHINH =====
     if (costDiff > 10) {
-        ss << "Tuyen co chi phi giao thong thap nhat phu hop hon trong dieu kien hien tai.\n";
+        ss << "Tuyen co chi phi giao thong thap nhat phu hop hon trong dieu kien hien tai.\n\n";
         ss << "Ly do:\n";
         ss << "Tuyen nay dai hon " << distDiff << "% nhung giam " << costDiff << "% chi phi giao thong.\n\n";
 
@@ -124,9 +124,9 @@ string evaluateRoutes(const Graph& g, const RouteResult& shortest, const RouteRe
 
         ss << "- Tuyen ngan nhat co cac su kien:\n";
         describeEvents(g, shortest.path, ss);
-        ss << "\n- Trong khi do, tuyen thay the:\n";
+        ss << "\nTrong khi do, tuyen co chi phi thap nhat:\n";
         describeEvents(g, traffic.path, ss);
-        ss << "- Do do, tuyen thay the giup tranh cac khu vuc dong duc va giam rui ro bat thuong.";
+        ss << "\nDo do, tuyen co chi phi thap nhat giup tranh cac khu vuc dong duc va giam rui ro bat thuong.\n";
     }
 
     else if (distDiff > 15) {
