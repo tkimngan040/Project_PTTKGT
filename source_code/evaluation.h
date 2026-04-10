@@ -4,6 +4,11 @@
 #include "models.h"
 #include <string>
 
-std::string evaluateRoutes(const RouteResult& shortest, const RouteResult& traffic);
+// Hàm đánh giá và so sánh 2 tuyến đường
+std::string evaluateRoutes(
+    const Graph& g,
+    const RouteResult& shortest,
+    const RouteResult& traffic
+);
 
 #endif

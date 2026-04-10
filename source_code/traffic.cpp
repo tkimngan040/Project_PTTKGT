@@ -1,6 +1,9 @@
 #include "traffic.h"
-#include <cstdlib> // rand()
-#include <ctime>   // time()
+#include <random>
+#include <ctime>
+
+// Random generator (xịn hơn rand)
+static std::mt19937 gen(time(0));
 
 //================= AREA FACTOR =================
 double getAreaFactor(AreaType type) {
@@ -40,9 +43,36 @@ double getTimeFactor(TimeSlot time) {
     return 1.0;
 }
 
+//================= EVENT FACTOR =================
+double getEventFactor(EventType e) {
+    switch(e) {
+        case EventType::NONE: return 1.0;
+        case EventType::ACCIDENT: return 1.5;
+        case EventType::ROADWORK: return 1.4;
+        case EventType::FLOOD: return 1.6;
+        case EventType::CONSTRUCTION: return 1.3;
+        case EventType::FESTIVAL: return 1.35;
+    }
+    return 1.0;
+}
+
 //================= RANDOM FACTOR =================
 double getRandomFactor() {
-    return 0.95 + (rand() % 11) / 100.0; // 0.95 -> 1.05
+    std::uniform_real_distribution<> dist(0.95, 1.05);
+    return dist(gen);
+}
+
+//================= RANDOM EVENT ==================
+EventType getRandomEvent() {
+    std::uniform_int_distribution<> dist(0, 99);
+    int r = dist(gen);
+
+    if (r < 55) return EventType::NONE;
+    else if (r < 70) return EventType::ACCIDENT;
+    else if (r < 80) return EventType::ROADWORK;
+    else if (r < 90) return EventType::FLOOD;
+    else if (r < 95) return EventType::CONSTRUCTION;
+    else return EventType::FESTIVAL;
 }
 
 //================= MAIN CALCULATION =================
@@ -51,19 +81,44 @@ double calculateTrafficCost(const Road& road, const TrafficContext& ctx) {
     double dayFactor = getDayFactor(ctx.day);
     double timeFactor = getTimeFactor(ctx.timeSlot);
     double randomFactor = getRandomFactor();
+    double eventFactor = getEventFactor(road.event);
 
-    return road.distance * road.baseTraffic * areaFactor * dayFactor * timeFactor * randomFactor;
+    return road.distance * road.baseTraffic *
+           areaFactor * dayFactor *
+           timeFactor * randomFactor *
+           eventFactor;
 }
 
 //================= UPDATE GRAPH =================
 void updateTraffic(Graph& g, const TrafficContext& ctx) {
-    static bool seeded = false;
-    if (!seeded) {
-        srand(time(0));
-        seeded = true;
+
+    int n = g.adjList.size();
+
+    for (int u = 0; u < n; u++) {
+        for (auto& road : g.adjList[u]) {
+
+            int v = road.to;
+
+            // Chỉ xử lý 1 chiều (u < v) để tránh random 2 lần
+            if (u < v) {
+                EventType e = getRandomEvent();
+
+                // Gán event cho cả 2 chiều
+                road.event = e;
+
+                for (auto& back : g.adjList[v]) {
+                    if (back.to == u) {
+                        back.event = e;
+                        break;
+                    }
+                }
+            }
+        }
     }
-    for (int i = 0; i < g.adjList.size(); i++) {
-        for (auto& road : g.adjList[i]) {
+
+    // Sau khi có event → tính lại cost
+    for (int u = 0; u < n; u++) {
+        for (auto& road : g.adjList[u]) {
             road.trafficCost = calculateTrafficCost(road, ctx);
         }
     }

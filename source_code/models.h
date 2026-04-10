@@ -14,6 +14,16 @@ enum class AreaType {
     PARK
 };
 
+//Sự kiện ngẫu nhiên
+enum class EventType {
+    NONE,
+    ACCIDENT,      // tai nạn
+    ROADWORK,      // sửa đường
+    FLOOD,         // ngập
+    CONSTRUCTION,  // công trình
+    FESTIVAL       // lễ hội
+};
+
 //Ngày
 enum class Day {
     MONDAY,
@@ -34,7 +44,6 @@ enum class TimeSlot {
     EVENING
 };
 
-
 //Địa điểm
 struct Location {
     int id;
@@ -50,6 +59,7 @@ struct Road {
     AreaType areaType;
     double baseTraffic = 0;
     double trafficCost = 0;
+    EventType event = EventType::NONE;
     Road(int f, int t, double d, AreaType a, double b)
         : from(f), to(t), distance(d), areaType(a), baseTraffic(b) {}
 };
@@ -76,5 +86,6 @@ struct RouteResult {
     double totalCost;
     bool found;
 };
+
 
 #endif
